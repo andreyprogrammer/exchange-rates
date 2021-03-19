@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.android.exchangerates.R
 import com.example.android.exchangerates.databinding.ActivityMainBinding
+import com.example.android.exchangerates.model.ExchangeDatabase
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,13 +24,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         setSupportActionBar(binding.toolbar)
-        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        binding.viewModel = mainViewModel
+
+        val application = requireNotNull(this).application
+        val dataSource = ExchangeDatabase.getInstance(application).exchangeDatabaseDao
+        val viewModelFactory = MainViewModelFactory(dataSource, application)
+        mainViewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
+
         binding.lifecycleOwner = this
+        binding.viewModel = mainViewModel
         binding.container.exchangeList.adapter = ExchangeAdapter(ExchangeAdapter.OnClickListener {
             mainViewModel.changeCurrency(it)
         })
-
 
         binding.container.input.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {

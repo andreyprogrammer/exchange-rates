@@ -9,10 +9,10 @@ import com.example.android.exchangerates.network.Currency
 @Dao
 interface ExchangeDatabaseDao {
 //    @Insert
-//    suspend fun insert(currencies: List<Currency>)
+//    suspend fun insert(currency: Currency)
 //
 //    @Update
-//    suspend fun update(currencies: List<Currency>)
+//    suspend fun update(currency: Currency)
 //
 //    @Query("SELECT * from currencies_table")
 //    suspend fun get(): List<Currency>

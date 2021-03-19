@@ -39,9 +39,9 @@ class MainViewModel(
                 _properties.value = transform(ExchangeApi.retrofitService.getCurrencies().valute)
 
             } catch (e: Exception) {
-//                val c = Currency("error", "error", 1, "error", 0.1)
-//                val a = Valute(c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c)
-//                _properties.value = transform(a)
+                val c = Currency("error", "error", 1, "error", 0.1)
+                val a = Valute(c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c)
+                _properties.value = transform(a)
             }
         }
     }
