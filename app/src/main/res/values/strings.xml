@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Exchange Rates</string>
+    <string name="action_settings">update exchange rates</string>
+
+</resources>
