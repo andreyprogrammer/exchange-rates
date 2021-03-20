@@ -1,7 +1,11 @@
 package com.example.android.exchangerates.ui
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
+import com.example.android.exchangerates.databaseToRecyclerview
+import com.example.android.exchangerates.internetToDatabase
+import com.example.android.exchangerates.model.Currencies
 import com.example.android.exchangerates.model.ExchangeDatabaseDao
 import com.example.android.exchangerates.network.Currency
 import com.example.android.exchangerates.network.ExchangeApi
@@ -13,8 +17,8 @@ class MainViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val _properties = MutableLiveData<List<Currency>>()
-    val properties: LiveData<List<Currency>>
+    private val _properties = MutableLiveData<ArrayList<Currency>>()
+    val properties: LiveData<ArrayList<Currency>>
         get() = _properties
 
     private val _currentCurrency = MutableLiveData<Currency>()
@@ -29,24 +33,48 @@ class MainViewModel(
     val currentRub: LiveData<String>
         get() = _currentRub
 
+    private val _isAppStarted = MutableLiveData<Boolean>()
+    val isAppStarted: LiveData<Boolean>
+        get() = _isAppStarted
+
     init {
         _currentRub.value = "100"
+        _isAppStarted.value = false
     }
 
-    fun exchangeRequest() {
+    fun requestFromInternet() {
         viewModelScope.launch {
             try {
                 _properties.value = transform(ExchangeApi.retrofitService.getCurrencies().valute)
-
+                clearDatabase()
+                properties.value!!.forEach { a -> insertDatabase(internetToDatabase(a)) }
+                Log.d("dff001", "")
             } catch (e: Exception) {
-                val c = Currency("error", "error", 1, "error", 0.1)
-                val a = Valute(c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c,c)
-                _properties.value = transform(a)
+                val c = Currency("error", 1, "error", 0.1)
+                val v = Valute(
+                    c, c, c, c, c, c, c, c, c, c, c,
+                    c, c, c, c, c, c, c, c, c, c, c,
+                    c, c, c, c, c, c, c, c, c, c, c, c
+                )
+                _properties.value = transform(v)
             }
         }
     }
 
-    private fun transform(valute: Valute): List<Currency> {
+    fun requestFromDatabase() {
+        viewModelScope.launch {
+            try {
+                val listCurrencies = database.get()
+                val listCurrency = ArrayList<Currency>(0)
+                listCurrencies.forEach { a -> listCurrency.add(databaseToRecyclerview(a)) }
+
+                _properties.value = listCurrency
+            }
+            catch (e: Exception) {}
+        }
+    }
+
+    private fun transform(valute: Valute): ArrayList<Currency> {
         val listCurrencies = ArrayList<Currency>()
         listCurrencies.add(valute.amd)
         listCurrencies.add(valute.aud)
@@ -109,24 +137,23 @@ class MainViewModel(
         onConvert(text)
     }
 
-//    fun isDBEmpty(): Boolean {
-//
-//        return false
-//    }
-//
-//    private fun DBRequest() {
-//        viewModelScope.launch {
-//
-//        }
-//    }
-//
-//    private fun DBUpdate() {
-//        viewModelScope.launch {
-//
-//        }
-//    }
-//
-//    private suspend fun update(currencies: List<Currency>) {
-//        database.update(currencies)
-//    }
+    private fun insertDatabase(currencies: Currencies) {
+        viewModelScope.launch {
+            try {
+                database.insert(currencies)
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    private fun clearDatabase() {
+        viewModelScope.launch {
+            database.clear()
+        }
+    }
+
+    fun setAppStarted(bool: Boolean) {
+        _isAppStarted.value = bool
+    }
 }

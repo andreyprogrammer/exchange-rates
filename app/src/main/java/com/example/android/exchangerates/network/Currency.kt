@@ -6,10 +6,6 @@ import com.google.gson.annotations.SerializedName
 
 data class Currency(
 
-    @Expose
-    @SerializedName("ID")
-    var id: String,
-
     @SerializedName("CharCode")
     @Expose
     var charCode: String,

@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Exchange Rates</string>
     <string name="action_settings">update exchange rates</string>
+    <string name="label">Roubles</string>
+    <string name="start_amount">100</string>
 
 </resources>

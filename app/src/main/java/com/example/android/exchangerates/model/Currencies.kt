@@ -12,16 +12,11 @@ data class Currencies(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0L,
 
-    @ColumnInfo(name = "CharCode")
     var charCode: String,
 
-    @ColumnInfo(name = "Nominal")
     var nominal: Int,
 
-    @ColumnInfo(name = "Name")
     var name: String,
 
-    @ColumnInfo(name = "Value")
     var amount: Double
-
 )

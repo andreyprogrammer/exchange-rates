@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -54,9 +55,17 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-//        if ()
+        if (isFirstStart()) {
+            updateListFromInternet()
+            savePreferences()
+            mainViewModel.setAppStarted(true)
+        } else {
+            if (mainViewModel.isAppStarted.value == false) {
+                updateListFromDatabase()
+                mainViewModel.setAppStarted(true)
+            }
 
-        update()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -67,23 +76,30 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_settings -> {
-                update(); true
+                updateListFromInternet(); true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun update() {
-        mainViewModel.exchangeRequest()
+    private fun updateListFromInternet() {
+        mainViewModel.requestFromInternet()
         binding.invalidateAll()
+        Toast.makeText(applicationContext, "from internet", Toast.LENGTH_SHORT).show()
     }
 
-    fun isFirstStart(): Boolean {
+    private fun updateListFromDatabase() {
+        mainViewModel.requestFromDatabase()
+        binding.invalidateAll()
+        Toast.makeText(applicationContext, "from database", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun isFirstStart(): Boolean {
         sharedPreferences = getPreferences(MODE_PRIVATE)
         return sharedPreferences.getString(key, "isFirstStart") == "isFirstStart"
     }
 
-    fun savePreferences() {
+    private fun savePreferences() {
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
         editor.putString(key, "isSecondStart")
         editor.apply()

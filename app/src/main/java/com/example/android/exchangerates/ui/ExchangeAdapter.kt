@@ -30,7 +30,7 @@ class ExchangeAdapter(private val onClickListener: OnClickListener) : ListAdapte
         }
 
         override fun areContentsTheSame(oldItem: Currency, newItem: Currency): Boolean {
-            return oldItem.id == newItem.id
+            return oldItem.amount == newItem.amount
         }
     }
 
