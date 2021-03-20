@@ -48,7 +48,7 @@ class MainViewModel(
                 _properties.value = transform(ExchangeApi.retrofitService.getCurrencies().valute)
                 clearDatabase()
                 properties.value!!.forEach { a -> insertDatabase(internetToDatabase(a)) }
-                Log.d("dff001", "")
+
             } catch (e: Exception) {
                 val c = Currency("error", 1, "error", 0.1)
                 val v = Valute(
@@ -57,6 +57,8 @@ class MainViewModel(
                     c, c, c, c, c, c, c, c, c, c, c, c
                 )
                 _properties.value = transform(v)
+                clearDatabase()
+                properties.value!!.forEach { a -> insertDatabase(internetToDatabase(a)) }
             }
         }
     }
